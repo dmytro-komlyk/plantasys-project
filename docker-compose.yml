@@ -1,0 +1,92 @@
+version: "3.8"
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    hostname: mongo
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=admin123
+    volumes:
+      - ./database/data:/data/db
+    ports:
+      - 27018:27017
+    networks:
+      - backend
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-ui
+    restart: unless-stopped
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=admin123
+      - ME_CONFIG_BASICAUTH_USERNAME=mexpress
+      - ME_CONFIG_BASICAUTH_PASSWORD=mexpress
+    ports:
+      - 8081:8081
+    networks:
+      - backend
+    links:
+      - mongo:mongo
+    depends_on:
+      - mongo
+
+  server:
+    build:
+      context: ./server
+      target: production
+      dockerfile: Dockerfile
+    container_name: server
+    restart: unless-stopped
+    env_file: ./server/.env.local
+    environment:
+      - MONGO_DB_LINK=mongodb://mongo:27017
+    ports:
+      - 30000:3000
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - mongo
+    links:
+      - mongo
+
+  client:
+    build:
+      context: ./client
+      target: production
+      dockerfile: Dockerfile
+    container_name: client
+    restart: unless-stopped
+    env_file: ./client/.env.local
+    # environment:
+    ports:
+      - "30001:3001"
+    networks:
+      - frontend
+
+  admin:
+    build:
+      context: ./admin
+      target: production
+      dockerfile: Dockerfile
+    container_name: admin
+    restart: unless-stopped
+    env_file: ./admin/.env.local
+    # environment:
+    ports:
+      - "30002:3002"
+    networks:
+      - frontend
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+volumes:
+  database:
+    driver: local
