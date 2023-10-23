@@ -4,6 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "install:server": "cd server && npm install",
+    "install": "npm run install:server",
+    "build:server": "cd server && npm run build",
+    "build": "npm run build:server",
+    "lint:server": "cd server && npm run lint",
+    "lint": "npm run lint:server",
     "prepare": "husky install"
   },
   "author": "",
