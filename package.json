@@ -5,11 +5,14 @@
   "main": "index.js",
   "scripts": {
     "install:server": "cd server && npm install",
-    "install": "npm run install:server",
+    "install:client": "cd client && npm install",
+    "install": "npm run install:server && npm run install:client",
     "build:server": "cd server && npm run build",
-    "build": "npm run build:server",
+    "build:client": "cd client && npm run build",
+    "build": "npm run build:server && npm run build:client",
     "lint:server": "cd server && npm run lint",
-    "lint": "npm run lint:server",
+    "lint:client": "cd client && npm run lint",
+    "lint": "npm run lint:server && npm run lint:client",
     "prepare": "husky install"
   },
   "author": "",
