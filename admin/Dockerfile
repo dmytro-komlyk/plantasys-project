@@ -3,12 +3,12 @@ FROM node:latest AS base
 WORKDIR /app/admin
 COPY package*.json ./
 COPY next.config.js ./
-COPY .env.example ./.env.local
+COPY .env.local.example ./.env.local
 EXPOSE 3002
 
 # Development Stage
 FROM base AS development
-RUN npm install -g nodemon && npm install
+RUN npm install
 COPY . .
 CMD ["npm", "run", "dev"]
 
