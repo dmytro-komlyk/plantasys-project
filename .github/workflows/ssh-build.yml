@@ -8,6 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  PROD_NAME: prod-nextjs-nestjs-boilerplate
 
 jobs:
   build:
@@ -34,33 +35,30 @@ jobs:
         if: contains(github.event.pull_request.labels.*.name, 'backend')
         uses: docker/build-push-action@v4
         with:
-          context: ./server
           target: production
+          file: ./apps/server/Dockerfile
           secrets: |
-            MONGO_DB_NAME=${{ secrets.MONGO_DB_NAME }}
-            MONGO_DB_AUTH_USERNAME=${{ secrets.MONGO_DB_AUTH_USERNAME }}
-            MONGO_DB_AUTH_PASSWORD=${{ secrets.MONGO_DB_AUTH_PASSWORD }}
-            MONGO_DB_URI=mongodb://mongo:27017
+
           push: true
           tags: |
-            ghcr.io/dmytro-komlyk/prod-nu3on-server:latest
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.PROD_NAME }}-server:latest
 
       - name: "Build Client"
         if: contains(github.event.pull_request.labels.*.name, 'frontend-client')
         uses: docker/build-push-action@v4
         with:
-          context: ./client
           target: production
+          file: ./apps/client/Dockerfile
           push: true
           tags: |
-            ghcr.io/dmytro-komlyk/prod-nu3on-client:latest
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.PROD_NAME }}-client:latest
 
       - name: "Build Admin"
         if: contains(github.event.pull_request.labels.*.name, 'frontend-admin')
         uses: docker/build-push-action@v4
         with:
-          context: ./admin
           target: production
+          file: ./apps/admin/Dockerfile
           push: true
           tags: |
-            ghcr.io/dmytro-komlyk/prod-nu3on-admin:latest
+            ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ env.PROD_NAME }}-admin:latest
