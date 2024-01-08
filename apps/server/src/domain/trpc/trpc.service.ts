@@ -3,7 +3,10 @@ import { initTRPC } from '@trpc/server';
 
 @Injectable()
 export class TrpcService {
-  trpc = initTRPC.create();
+  createContext = () => ({});
+  trpc = initTRPC
+    .context<Awaited<ReturnType<typeof this.createContext>>>()
+    .create();
   procedure = this.trpc.procedure;
   router = this.trpc.router;
   mergeRouters = this.trpc.mergeRouters;

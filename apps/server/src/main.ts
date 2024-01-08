@@ -1,11 +1,12 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { TrpcRouter } from './trpc/trpc.router';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { AppModule } from './domain/app.module';
+import { TrpcRouter } from './domain/trpc/trpc.router';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix(process.env.API || '/api');
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.setGlobalPrefix(process.env.APP_API as string);
   app.enableCors();
   app.useGlobalPipes(
     new ValidationPipe({
@@ -14,10 +15,13 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.useStaticAssets(`${process.cwd()}/${process.env.APP_STATIC_ASSETS}`, {
+    prefix: `/${process.env.APP_STATIC_ASSETS}`,
+  });
 
   const trpc = app.get(TrpcRouter);
   trpc.applyMiddleware(app);
 
-  await app.listen(process.env.PORT || 3000);
+  await app.listen(process.env.APP_PORT || 3000);
 }
 bootstrap();
