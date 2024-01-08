@@ -1,6 +1,6 @@
-ARG NODE_VERSION=20
+ARG NODE_VERSION=18
 
-FROM node:${NODE_VERSION}-alpine as base
+FROM --platform=linux/amd64 node:${NODE_VERSION}-alpine3.17 as base
 
 ARG PACKAGE_NAME=server
 # ARG PNPM_VERSION=8.9.0
@@ -29,24 +29,35 @@ COPY ${SERVICE_PATH}/.env.example ./${SERVICE_PATH}/.env
 
 ENV NODE_ENV production
 
-RUN pnpm db:generate
-# RUN pnpm db:push
 RUN pnpm build:server
-RUN pnpm deploy --filter=server --prod /app/server
+RUN pnpm deploy --filter=server --prod /prod/${PACKAGE_NAME}
+RUN cd /prod/${PACKAGE_NAME} && pnpm db:generate
 
 FROM base as runner
-COPY --chown=node:node --from=builder /app/server /app/server
-WORKDIR /app/server
+COPY --chown=node:node --from=builder /prod/${PACKAGE_NAME} /app/${SERVICE_PATH}
+COPY --chown=node:node --from=builder /app/${SERVICE_PATH}/dist /app/${SERVICE_PATH}/dist
+WORKDIR /app
+COPY tsconfig.json ./tsconfig.json
 
-RUN pnpm db:generate
-# # Don't run production as root
-
+WORKDIR /app/${SERVICE_PATH}
 USER node
 
 ENV NODE_ENV=production
 ENV PORT 3000
 ENV HOSTNAME 0.0.0.0
-
 EXPOSE 3000
 
-CMD ["pnpm", "start:prod"]
+CMD [ "pnpm", "start:prod" ]
+
+FROM base as prisma-runner
+COPY --chown=node:node --from=runner /app/${SERVICE_PATH} /app/apps/prisma
+WORKDIR /app/apps/prisma
+
+USER node
+
+ENV PORT 5555
+ENV HOSTNAME 0.0.0.0
+
+EXPOSE 5555
+
+CMD ["pnpm", "studio"]
