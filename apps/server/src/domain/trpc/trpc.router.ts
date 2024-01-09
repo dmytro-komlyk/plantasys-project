@@ -3,7 +3,10 @@ import * as trpcExpress from '@trpc/server/adapters/express';
 import { OpenAPIV3 } from 'openapi-types';
 import swaggerUi from 'swagger-ui-express';
 import { generateOpenApiDocument } from 'trpc-openapi';
+import { CardsProductRouter } from '../cardsProduct/cardsProduct.router';
 import { ImagesRouter } from '../images/images.router';
+
+import { CardsProductService } from '../cardsProduct/cardsProduct.service';
 import { ImagesService } from '../images/images.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { TrpcService } from '../trpc/trpc.service';
@@ -13,10 +16,12 @@ export class TrpcRouter {
   constructor(
     private readonly trpc: TrpcService,
     private readonly images: ImagesRouter,
+    private readonly cardsProduct: CardsProductRouter,
   ) {}
 
   appRouter = this.trpc.router({
     images: this.images.imagesRouter,
+    cardsProduct: this.cardsProduct.cardsProductRouter,
   });
 
   openApiDocument: OpenAPIV3.Document = generateOpenApiDocument(
@@ -35,6 +40,10 @@ export class TrpcRouter {
     const trpcRouter = new TrpcRouter(
       trpcService,
       new ImagesRouter(trpcService, new ImagesService(prismaService)),
+      new CardsProductRouter(
+        trpcService,
+        new CardsProductService(prismaService),
+      ),
     );
     return trpcRouter.appRouter;
   }

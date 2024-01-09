@@ -32,7 +32,7 @@ type InfoCard {
   description   String
 }
 
-model CardInProduct {
+model CardProduct {
   id                 String          @id @default(auto()) @map("_id") @db.ObjectId
   title              String
   preview            String
@@ -42,54 +42,52 @@ model CardInProduct {
   gallery            Image[]         @relation(fields: [gallery_ids], references: [id], name: "card_product_gallery")
   gallery_ids        String[]        @db.ObjectId
   info               InfoCard[]
-  products_line      ProductInLine[] @relation(fields: [products_line_ids], references: [id], name: "product_line_cards")
-  products_line_ids  String[]        @db.ObjectId
+  product_line       ProductLine     @relation(fields: [product_line_id], references: [id])
+  product_line_id    String          @db.ObjectId
 
-  @@map("cards_in_product")
+  @@map("cards_product")
 }
 
-model ProductInLine {
+model ProductLine {
   id            String            @id @default(auto()) @map("_id") @db.ObjectId
   slug          String
   title         String
   tagline       String
   description   String
   metadata      Metadata
-  banner        Image             @relation(fields: [banner_id], references: [id], name: "product_banner")
-  banner_id     String            @db.ObjectId
-  cards         CardInProduct[]   @relation(fields: [cards_ids], references: [id], name: "product_line_cards")
-  cards_ids     String[]          @db.ObjectId
-  lines         Line[]            @relation(fields: [lines_ids], references: [id], name: "product_line")
-  lines_ids     String[]          @db.ObjectId
+  banner        Image           @relation(fields: [banner_id], references: [id], name: "product_banner")
+  banner_id     String          @db.ObjectId
+  cards         CardProduct[]
+  line          Line            @relation(fields: [line_id], references: [id])
+  line_id       String          @db.ObjectId
 
-  @@map("products_in_line")          
+  @@map("products_line")          
 }
 
 model Line {
-  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  id                String          @id @default(auto()) @map("_id") @db.ObjectId
   slug              String
   title             String
   description       String
   metadata          Metadata
-  banner            Image             @relation(fields: [banner_id], references: [id], name: "line_banner")
-  banner_id         String            @db.ObjectId
-  products          ProductInLine[]   @relation(fields: [products_ids], references: [id], name: "product_line")
-  products_ids      String[]          @db.ObjectId
-  categories        Category[]        @relation(fields: [categories_ids], references: [id], name: "category_lines")
-  categories_ids    String[]          @db.ObjectId
+  banner            Image           @relation(fields: [banner_id], references: [id], name: "line_banner")
+  banner_id         String          @db.ObjectId
+  products          ProductLine[]
+  category          Category        @relation(fields: [category_id], references: [id])
+  category_id       String          @db.ObjectId
 
   @@map("lines")   
 }
 
 model ProductBooster {
-  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  id                String          @id @default(auto()) @map("_id") @db.ObjectId
   slug              String
   title             String
   tagline           String
   description       String
   metadata          Metadata
-  categories        Category[]        @relation(fields: [categories_ids], references: [id], name: "products_booster_category")
-  categories_ids    String[]          @db.ObjectId
+  category          Category        @relation(fields: [category_id], references: [id])
+  category_id       String          @db.ObjectId
  
   @@map("products_booster")          
 }
@@ -100,10 +98,8 @@ model Category {
   title                 String
   description           String
   metadata              Metadata
-  lines                 Line[]           @relation(fields: [lines_ids], references: [id], name: "category_lines")
-  lines_ids             String[]         @db.ObjectId
-  products_booster      ProductBooster[] @relation(fields: [products_booster_ids], references: [id], name: "products_booster_category")
-  products_booster_ids  String[]         @db.ObjectId
+  lines                 Line[]
+  products_booster      ProductBooster[]
 
   @@map("categories")   
 }
@@ -113,10 +109,10 @@ model Image {
   alt                       String
   file                      ImagesFile
   type                      String
-  product_banner            ProductInLine[]   @relation("product_banner")
+  product_banner            ProductLine[]     @relation("product_banner")
   line_banner               Line[]            @relation("line_banner")
-  card_product_image        CardInProduct[]   @relation("card_product_image")
-  card_product_gallery      CardInProduct[]   @relation(fields: [card_product_gallery_ids], references: [id], name: "card_product_gallery")
+  card_product_image        CardProduct[]     @relation("card_product_image")
+  card_product_gallery      CardProduct[]     @relation(fields: [card_product_gallery_ids], references: [id], name: "card_product_gallery")
   card_product_gallery_ids  String[]          @db.ObjectId
 
   @@map("images")
