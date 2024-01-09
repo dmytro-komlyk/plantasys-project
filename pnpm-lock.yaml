@@ -129,6 +129,18 @@ importers:
       '@nextui-org/theme':
         specifier: ^2.1.9
         version: 2.1.9(tailwindcss@3.3.5)
+      '@tanstack/react-query':
+        specifier: ^4.35.3
+        version: 4.35.3(react-dom@18.2.0)(react@18.2.0)
+      '@trpc/client':
+        specifier: ^10.43.6
+        version: 10.43.6(@trpc/server@10.43.6)
+      '@trpc/react-query':
+        specifier: 10.43.6
+        version: 10.43.6(@tanstack/react-query@4.35.3)(@trpc/client@10.43.6)(@trpc/server@10.43.6)(react-dom@18.2.0)(react@18.2.0)
+      '@trpc/server':
+        specifier: ^10.43.6
+        version: 10.43.6
       clsx:
         specifier: ^2.0.0
         version: 2.0.0
@@ -151,6 +163,9 @@ importers:
         specifier: ^18
         version: 18.2.0(react@18.2.0)
     devDependencies:
+      '@prisma/nextjs-monorepo-workaround-plugin':
+        specifier: ^5.7.1
+        version: 5.8.0
       '@types/node':
         specifier: ^20
         version: 20.8.10
@@ -2945,6 +2960,10 @@ packages:
   /@prisma/engines@5.6.0:
     resolution: {integrity: sha512-Mt2q+GNJpU2vFn6kif24oRSBQv1KOkYaterQsi0k2/lA+dLvhRX6Lm26gon6PYHwUM8/h8KRgXIUMU0PCLB6bw==}
     requiresBuild: true
+
+  /@prisma/nextjs-monorepo-workaround-plugin@5.8.0:
+    resolution: {integrity: sha512-TqwR2zCrejxO7JcTOO+EKJ7Zke6YhTC7OfI2Y7gXFl3Vgcm59r7DCCAZ9VueSUROPATQ1s9/zUb4VN8YReDFlg==}
+    dev: true
 
   /@react-aria/button@3.8.4(react@18.2.0):
     resolution: {integrity: sha512-rTGZk5zu+lQNjfij2fwnw2PAgBgzNLi3zbMw1FL5/XwVx+lEH2toeqKLoqULtd7nSxskYuQz56VhmjUok6Qkmg==}
