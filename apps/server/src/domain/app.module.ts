@@ -6,6 +6,7 @@ import { CardsProductModule } from './cardsProduct/cardsProduct.module';
 import { ImagesModule } from './images/images.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
+import { ProductsLineModule } from './productsLine/productsLine.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { PrismaService } from './prisma/prisma.service';
     TrpcModule,
     ImagesModule,
     CardsProductModule,
+    ProductsLineModule,
     // AuthModule,
     // UsersModule,
     // NotificationsModule,

@@ -58,7 +58,7 @@ model ProductLine {
   banner        Image           @relation(fields: [banner_id], references: [id], name: "product_banner")
   banner_id     String          @db.ObjectId
   cards         CardProduct[]
-  line          Line            @relation(fields: [line_id], references: [id])
+  line          Line?           @relation(fields: [line_id], references: [id])
   line_id       String          @db.ObjectId
 
   @@map("products_line")          

@@ -66,13 +66,13 @@ export class CardsProductService {
       });
     }
 
-    const updatedBenefit = await this.prisma.cardProduct.update({
+    const updatedCardProduct = await this.prisma.cardProduct.update({
       where: { id },
       data: newData,
       include: { image: true, gallery: true },
     });
 
-    return updatedBenefit;
+    return updatedCardProduct;
   }
 
   public async remove(id: string): Promise<string> {

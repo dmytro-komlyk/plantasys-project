@@ -9,6 +9,8 @@ import { ImagesRouter } from '../images/images.router';
 import { CardsProductService } from '../cardsProduct/cardsProduct.service';
 import { ImagesService } from '../images/images.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { ProductsLineRouter } from '../productsLine/productsLine.router';
+import { ProductsLineService } from '../productsLine/productsLine.service';
 import { TrpcService } from '../trpc/trpc.service';
 
 @Injectable()
@@ -17,11 +19,13 @@ export class TrpcRouter {
     private readonly trpc: TrpcService,
     private readonly images: ImagesRouter,
     private readonly cardsProduct: CardsProductRouter,
+    private readonly productsLine: ProductsLineRouter,
   ) {}
 
   appRouter = this.trpc.router({
     images: this.images.imagesRouter,
     cardsProduct: this.cardsProduct.cardsProductRouter,
+    productsLine: this.productsLine.productsLineRouter,
   });
 
   openApiDocument: OpenAPIV3.Document = generateOpenApiDocument(
@@ -31,7 +35,7 @@ export class TrpcRouter {
       description: 'OpenAPI compliant REST API built using tRPC with Express',
       version: '1.0.0',
       baseUrl: process.env.APP_BASE_URL as string,
-      tags: ['cardsProduct'],
+      tags: ['cardsProduct', 'productsLine'],
     },
   );
 
@@ -45,6 +49,10 @@ export class TrpcRouter {
       new CardsProductRouter(
         trpcService,
         new CardsProductService(prismaService),
+      ),
+      new ProductsLineRouter(
+        trpcService,
+        new ProductsLineService(prismaService),
       ),
     );
     return trpcRouter.appRouter;
