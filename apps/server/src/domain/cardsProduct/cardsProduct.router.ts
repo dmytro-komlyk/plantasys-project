@@ -22,7 +22,7 @@ export class CardsProductRouter {
       .meta({
         openapi: {
           method: 'GET',
-          path: '/getAll',
+          path: '/getAllCards',
           tags: ['cardsProduct'],
           summary: 'Read all product`s cards',
         },
@@ -37,7 +37,7 @@ export class CardsProductRouter {
       .meta({
         openapi: {
           method: 'GET',
-          path: '/getById',
+          path: '/getByIdCard',
           tags: ['cardsProduct'],
           summary: 'Read a product`s card by id',
         },
@@ -52,7 +52,7 @@ export class CardsProductRouter {
       .meta({
         openapi: {
           method: 'POST',
-          path: '/create',
+          path: '/createCard',
           tags: ['cardsProduct'],
           // protect: true,
           summary: 'Create a new product`s card',
@@ -68,7 +68,7 @@ export class CardsProductRouter {
       .meta({
         openapi: {
           method: 'POST',
-          path: '/update',
+          path: '/updateCard',
           tags: ['cardsProduct'],
           // protect: true,
           summary: 'Update an existing product`s card',
@@ -84,7 +84,7 @@ export class CardsProductRouter {
       .meta({
         openapi: {
           method: 'POST',
-          path: '/remove',
+          path: '/removeCard',
           tags: ['cardsProduct'],
           // protect: true,
           summary: 'Delete a product`s card',
