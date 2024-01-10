@@ -73,7 +73,7 @@ model Line {
   banner            Image           @relation(fields: [banner_id], references: [id], name: "line_banner")
   banner_id         String          @db.ObjectId
   products          ProductLine[]
-  category          Category        @relation(fields: [category_id], references: [id])
+  category          Category?        @relation(fields: [category_id], references: [id])
   category_id       String          @db.ObjectId
 
   @@map("lines")   

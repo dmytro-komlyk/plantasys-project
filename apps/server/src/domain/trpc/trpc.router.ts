@@ -8,6 +8,8 @@ import { ImagesRouter } from '../images/images.router';
 
 import { CardsProductService } from '../cardsProduct/cardsProduct.service';
 import { ImagesService } from '../images/images.service';
+import { LinesRouter } from '../lines/lines.router';
+import { LinesService } from '../lines/lines.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { ProductsLineRouter } from '../productsLine/productsLine.router';
 import { ProductsLineService } from '../productsLine/productsLine.service';
@@ -20,12 +22,14 @@ export class TrpcRouter {
     private readonly images: ImagesRouter,
     private readonly cardsProduct: CardsProductRouter,
     private readonly productsLine: ProductsLineRouter,
+    private readonly lines: LinesRouter,
   ) {}
 
   appRouter = this.trpc.router({
     images: this.images.imagesRouter,
     cardsProduct: this.cardsProduct.cardsProductRouter,
     productsLine: this.productsLine.productsLineRouter,
+    lines: this.lines.linesRouter,
   });
 
   openApiDocument: OpenAPIV3.Document = generateOpenApiDocument(
@@ -35,7 +39,7 @@ export class TrpcRouter {
       description: 'OpenAPI compliant REST API built using tRPC with Express',
       version: '1.0.0',
       baseUrl: process.env.APP_BASE_URL as string,
-      tags: ['cardsProduct', 'productsLine'],
+      tags: ['cardsProduct', 'productsLine', 'lines'],
     },
   );
 
@@ -54,6 +58,7 @@ export class TrpcRouter {
         trpcService,
         new ProductsLineService(prismaService),
       ),
+      new LinesRouter(trpcService, new LinesService(prismaService)),
     );
     return trpcRouter.appRouter;
   }
