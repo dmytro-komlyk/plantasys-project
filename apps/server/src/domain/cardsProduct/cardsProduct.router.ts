@@ -18,7 +18,7 @@ export class CardsProductRouter {
   ) {}
 
   cardsProductRouter = this.trpc.router({
-    getAll: this.trpc.procedure
+    getAllCards: this.trpc.procedure
       .meta({
         openapi: {
           method: 'GET',
@@ -33,7 +33,7 @@ export class CardsProductRouter {
         const items = await this.cardsProductService.findAll();
         return { items };
       }),
-    getById: this.trpc.procedure
+    getByIdCard: this.trpc.procedure
       .meta({
         openapi: {
           method: 'GET',
@@ -48,7 +48,7 @@ export class CardsProductRouter {
         const item = await this.cardsProductService.findById(input.id);
         return { item };
       }),
-    create: this.trpc.procedure
+    createCard: this.trpc.procedure
       .meta({
         openapi: {
           method: 'POST',
@@ -64,7 +64,7 @@ export class CardsProductRouter {
         const item = await this.cardsProductService.create({ ...input });
         return { item };
       }),
-    update: this.trpc.procedure
+    updateCard: this.trpc.procedure
       .meta({
         openapi: {
           method: 'POST',
@@ -80,7 +80,7 @@ export class CardsProductRouter {
         const item = await this.cardsProductService.update(input);
         return { item };
       }),
-    remove: this.trpc.procedure
+    removeCard: this.trpc.procedure
       .meta({
         openapi: {
           method: 'POST',
