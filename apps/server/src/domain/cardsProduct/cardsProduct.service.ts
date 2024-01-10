@@ -1,12 +1,7 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { Types } from 'mongoose';
-
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
+import { TRPCError } from '@trpc/server';
 import {
   createCardProductSchema,
   outputCardProductSchema,
@@ -24,17 +19,16 @@ export class CardsProductService {
   }
 
   public async findById(id: string): Promise<outputCardProductSchema> {
-    if (!Types.ObjectId.isValid(id)) {
-      throw new NotFoundException(`Incorrect ID - ${id}`);
-    }
-
     const cardProduct = await this.prisma.cardProduct.findUnique({
       where: { id },
       include: { image: true, gallery: true },
     });
 
     if (!cardProduct) {
-      throw new NotFoundException(`CardProduct with ID "${id}" was not found`);
+      throw new TRPCError({
+        message: `CardProduct with ID ${id} was not found`,
+        code: 'NOT_FOUND',
+      });
     }
 
     return cardProduct;
@@ -48,9 +42,10 @@ export class CardsProductService {
     });
 
     if (foundCardProduct) {
-      throw new BadRequestException(
-        `CardProduct with slug "${data.title}" already exists`,
-      );
+      throw new TRPCError({
+        message: `CardProduct with slug "${data.title}" already exists`,
+        code: 'FORBIDDEN',
+      });
     }
     const createdCardProduct = await this.prisma.cardProduct.create({ data });
     const cardProduct = await this.findById(createdCardProduct.id);
@@ -62,10 +57,13 @@ export class CardsProductService {
     data: updateCardProductSchema,
   ): Promise<outputCardProductSchema> {
     const { id, ...newData } = data;
-    const benefit = await this.findById(id);
+    const cardProduct = await this.findById(id);
 
-    if (!benefit) {
-      throw new NotFoundException(`Benefit with ID ${id} was not found`);
+    if (!cardProduct) {
+      throw new TRPCError({
+        message: `CardProduct with ID ${id} was not found`,
+        code: 'NOT_FOUND',
+      });
     }
 
     const updatedBenefit = await this.prisma.cardProduct.update({
@@ -78,16 +76,15 @@ export class CardsProductService {
   }
 
   public async remove(id: string): Promise<string> {
-    if (!Types.ObjectId.isValid(id)) {
-      throw new NotFoundException(`Incorrect ID - ${id}`);
-    }
+    const cardProduct = await this.prisma.cardProduct
+      .delete({ where: { id } })
+      .catch(() => {
+        throw new TRPCError({
+          message: `CardProduct with ID ${id} was not found`,
+          code: 'NOT_FOUND',
+        });
+      });
 
-    const benefit = await this.prisma.cardProduct.delete({ where: { id } });
-
-    if (!benefit) {
-      throw new NotFoundException(`CardProduct with ID ${id} was not found`);
-    }
-
-    return id;
+    return cardProduct.id;
   }
 }

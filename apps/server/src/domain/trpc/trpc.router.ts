@@ -28,8 +28,10 @@ export class TrpcRouter {
     this.appRouter,
     {
       title: 'tRPC OpenAPI',
+      description: 'OpenAPI compliant REST API built using tRPC with Express',
       version: '1.0.0',
       baseUrl: process.env.APP_BASE_URL as string,
+      tags: ['cardsProduct'],
     },
   );
 
