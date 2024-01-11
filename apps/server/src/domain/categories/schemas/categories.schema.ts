@@ -1,4 +1,5 @@
-import { outputLineSchema } from '@server/domain/lines/schemas/lines.schema';
+import { updateLineSchema } from '@server/domain/lines/schemas/lines.schema';
+import { outputProductBoosterSchema } from '@server/domain/productsBooster/schemas/productsBooster.schema';
 import { MetaSchema } from '@server/shared/schemas/metadata.schema';
 import { z } from 'zod';
 
@@ -23,8 +24,8 @@ export const outputCategorySchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   metadata: MetaSchema,
-  lines: z.array(outputLineSchema),
-  products_booster: z.array(outputLineSchema),
+  lines: z.array(updateLineSchema),
+  products_booster: z.array(outputProductBoosterSchema),
 });
 
 export type createCategorySchema = z.TypeOf<typeof createCategorySchema>;

@@ -21,6 +21,12 @@ export class CategoriesService {
             category: true,
           },
         },
+        products_booster: {
+          include: {
+            image: true,
+            gallery: true,
+          },
+        },
       },
     });
   }
@@ -28,6 +34,20 @@ export class CategoriesService {
   public async findById(id: string): Promise<outputCategorySchema> {
     const category = await this.prisma.category.findUnique({
       where: { id },
+      include: {
+        lines: {
+          include: {
+            banner: true,
+            category: true,
+          },
+        },
+        products_booster: {
+          include: {
+            image: true,
+            gallery: true,
+          },
+        },
+      },
     });
 
     if (!category) {
@@ -75,6 +95,20 @@ export class CategoriesService {
     const updatedCategory = await this.prisma.category.update({
       where: { id },
       data: newData,
+      include: {
+        lines: {
+          include: {
+            banner: true,
+            category: true,
+          },
+        },
+        products_booster: {
+          include: {
+            image: true,
+            gallery: true,
+          },
+        },
+      },
     });
 
     return updatedCategory;
