@@ -80,14 +80,19 @@ model Line {
 }
 
 model ProductBooster {
-  id                String          @id @default(auto()) @map("_id") @db.ObjectId
-  slug              String
-  title             String
-  tagline           String
-  description       String
-  metadata          Metadata
-  category          Category        @relation(fields: [category_id], references: [id])
-  category_id       String          @db.ObjectId
+  id                 String          @id @default(auto()) @map("_id") @db.ObjectId
+  slug               String
+  title              String
+  preview            String
+  metadata           Metadata
+  image              Image           @relation(fields: [image_id], references: [id], name: "product_booster_image")
+  image_id           String          @db.ObjectId
+  tags               String[]
+  gallery            Image[]         @relation(fields: [gallery_ids], references: [id], name: "product_booster_gallery")
+  gallery_ids        String[]        @db.ObjectId
+  info               InfoCard[]
+  category           Category        @relation(fields: [category_id], references: [id])
+  category_id        String          @db.ObjectId
  
   @@map("products_booster")          
 }
@@ -105,16 +110,18 @@ model Category {
 }
 
 model Image {
-  id                        String            @id @default(auto()) @map("_id") @db.ObjectId
-  alt                       String
-  file                      ImagesFile
-  type                      String
-  product_banner            ProductLine[]     @relation("product_banner")
-  line_banner               Line[]            @relation("line_banner")
-  card_product_image        CardProduct[]     @relation("card_product_image")
-  card_product_gallery      CardProduct[]     @relation(fields: [card_product_gallery_ids], references: [id], name: "card_product_gallery")
-  card_product_gallery_ids  String[]          @db.ObjectId
-
+  id                            String            @id @default(auto()) @map("_id") @db.ObjectId
+  alt                           String
+  file                          ImagesFile
+  type                          String
+  product_banner                ProductLine[]     @relation("product_banner")
+  line_banner                   Line[]            @relation("line_banner")
+  card_product_image            CardProduct[]     @relation("card_product_image")
+  card_product_gallery          CardProduct[]     @relation(fields: [card_product_gallery_ids], references: [id], name: "card_product_gallery")
+  card_product_gallery_ids      String[]          @db.ObjectId
+  product_booster_image         ProductBooster[]  @relation("product_booster_image")
+  product_booster_gallery       ProductBooster[]  @relation(fields: [product_booster_gallery_ids], references: [id], name: "product_booster_gallery")
+  product_booster_gallery_ids   String[]          @db.ObjectId
   @@map("images")
 }
 
