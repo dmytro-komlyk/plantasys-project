@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { AuthRouter } from '../auth/auth.router';
+import { AuthService } from '../auth/auth.service';
 import { CardsProductRouter } from '../cardsProduct/cardsProduct.router';
 import { CardsProductService } from '../cardsProduct/cardsProduct.service';
 import { CategoriesRouter } from '../categories/categories.router';
@@ -14,6 +17,8 @@ import { ProductsLineRouter } from '../productsLine/productsLine.router';
 import { ProductsLineService } from '../productsLine/productsLine.service';
 import { TrpcRouter } from '../trpc/trpc.router';
 import { TrpcService } from '../trpc/trpc.service';
+import { UserRouter } from '../users/users.router';
+import { UserService } from '../users/users.service';
 
 @Module({
   imports: [PrismaModule],
@@ -32,6 +37,11 @@ import { TrpcService } from '../trpc/trpc.service';
     CategoriesRouter,
     ProductsBoosterService,
     ProductsBoosterRouter,
+    AuthService,
+    AuthRouter,
+    UserService,
+    UserRouter,
+    JwtService,
   ],
   exports: [TrpcService],
 })

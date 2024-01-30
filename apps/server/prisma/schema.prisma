@@ -91,7 +91,7 @@ model ProductBooster {
   gallery            Image[]         @relation(fields: [gallery_ids], references: [id], name: "product_booster_gallery")
   gallery_ids        String[]        @db.ObjectId
   info               InfoCard[]
-  category           Category        @relation(fields: [category_id], references: [id])
+  category           Category?        @relation(fields: [category_id], references: [id])
   category_id        String          @db.ObjectId
  
   @@map("products_booster")          
@@ -126,43 +126,13 @@ model Image {
 }
 
 model User {
-  id            String  @id @default(auto()) @map("_id") @db.ObjectId
-  name          String?
-  email         String?   @unique
-  password      String?
-
+  id                   String         @id @default(auto()) @map("_id") @db.ObjectId
+  name                 String         @unique
+  email                String         @unique
+  password             String
+  accessToken          String         
+  accessTokenExpires   Int
+  refreshToken         String
+  
   @@map("users")
 }
-
-// model Account {
-//   id                 String  @id @default(auto()) @map("_id") @db.ObjectId
-//   user_id            String  @db.ObjectId
-//   type               String
-//   provider           String
-//   providerAccountId  String
-//   refresh_token      String?  @db.String
-//   access_token       String?  @db.String
-//   expires_at         Int?
-//   token_type         String?
-//   scope              String?
-//   id_token           String?  @db.String
-//   session_state      String?
-
-//   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-//   @@unique([provider, providerAccountId])
-// }
-
-// model Session {
-//   id           String  @id @default(auto()) @map("_id") @db.ObjectId
-//   sessionToken String  @unique
-//   user_id      String  @db.ObjectId 
-//   expires      DateTime
-//   user         User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-// }
-
-// model VerificationToken {
-//   id         String  @id @default(auto()) @map("_id") @db.ObjectId
-//   token      String   @unique
-//   expires    DateTime
-// }

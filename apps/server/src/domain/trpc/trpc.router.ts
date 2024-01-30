@@ -1,14 +1,18 @@
 import { INestApplication, Injectable } from '@nestjs/common';
-import * as trpcExpress from '@trpc/server/adapters/express';
+import { JwtService } from '@nestjs/jwt';
+import { createExpressMiddleware } from '@trpc/server/adapters/express';
+import express from 'express';
 import { OpenAPIV3 } from 'openapi-types';
 import swaggerUi from 'swagger-ui-express';
 import { generateOpenApiDocument } from 'trpc-openapi';
-import { CardsProductRouter } from '../cardsProduct/cardsProduct.router';
-import { ImagesRouter } from '../images/images.router';
 
+import { AuthRouter } from '../auth/auth.router';
+import { AuthService } from '../auth/auth.service';
+import { CardsProductRouter } from '../cardsProduct/cardsProduct.router';
 import { CardsProductService } from '../cardsProduct/cardsProduct.service';
 import { CategoriesRouter } from '../categories/categories.router';
 import { CategoriesService } from '../categories/categories.service';
+import { ImagesRouter } from '../images/images.router';
 import { ImagesService } from '../images/images.service';
 import { LinesRouter } from '../lines/lines.router';
 import { LinesService } from '../lines/lines.service';
@@ -17,7 +21,9 @@ import { ProductsBoosterRouter } from '../productsBooster/productsBooster.router
 import { ProductsBoosterService } from '../productsBooster/productsBooster.service';
 import { ProductsLineRouter } from '../productsLine/productsLine.router';
 import { ProductsLineService } from '../productsLine/productsLine.service';
-import { TrpcService } from '../trpc/trpc.service';
+import { UserRouter } from '../users/users.router';
+import { UserService } from '../users/users.service';
+import { TrpcService } from './trpc.service';
 
 @Injectable()
 export class TrpcRouter {
@@ -29,6 +35,8 @@ export class TrpcRouter {
     private readonly lines: LinesRouter,
     private readonly categories: CategoriesRouter,
     private readonly productsBooster: ProductsBoosterRouter,
+    private readonly users: UserRouter,
+    private readonly auth: AuthRouter,
   ) {}
 
   appRouter = this.trpc.router({
@@ -38,6 +46,8 @@ export class TrpcRouter {
     lines: this.lines.linesRouter,
     categories: this.categories.categoriesRouter,
     productsBooster: this.productsBooster.productsBoosterRouter,
+    users: this.users.usersRouter,
+    auth: this.auth.authRouter,
   });
 
   openApiDocument: OpenAPIV3.Document = generateOpenApiDocument(
@@ -53,13 +63,17 @@ export class TrpcRouter {
         'lines',
         'categories',
         'productsBooster',
+        'users',
+        'auth',
       ],
     },
   );
 
-  static getAppRouter(): AppRouter {
-    const prismaService = new PrismaService({});
-    const trpcService = new TrpcService();
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  static getAppRouter() {
+    const prismaService = new PrismaService();
+    const jwtService = new JwtService();
+    const trpcService = new TrpcService(prismaService, jwtService);
 
     const trpcRouter = new TrpcRouter(
       trpcService,
@@ -78,28 +92,38 @@ export class TrpcRouter {
         trpcService,
         new ProductsBoosterService(prismaService),
       ),
+      new UserRouter(trpcService, new UserService(prismaService)),
+      new AuthRouter(
+        trpcService,
+        new UserService(prismaService),
+        new AuthService(prismaService, jwtService),
+      ),
     );
-    return trpcRouter.appRouter;
+    return {
+      appRouter: trpcRouter.appRouter,
+      createCallerFactory: trpcRouter.trpc.createCallerFactory,
+    };
   }
 
   async applyMiddleware(app: INestApplication): Promise<void> {
+    app.use(express.json());
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    app.use((req: any, _res: any, next: any) => {
+      // request logger
+      console.log('⬅️ ', req.method, req.path, req.body, req.query);
+
+      next();
+    });
+
     app.use(
       `/${process.env.APP_API}/${process.env.APP_TRPC}`,
-      trpcExpress.createExpressMiddleware({
+      createExpressMiddleware({
         router: this.appRouter,
         createContext: this.trpc.createContext,
       }),
     );
-    // app.use(
-    //   `/${process.env.APP_API}`,
-    //   createOpenApiExpressMiddleware({
-    //     router: this.appRouter,
-    //     createContext: undefined,
-    //     responseMeta: undefined,
-    //     onError: undefined,
-    //     maxBodySize: undefined,
-    //   }),
-    // );
+
     app.use(
       `/${process.env.APP_SWAGER}`,
       swaggerUi.serve,
@@ -108,5 +132,5 @@ export class TrpcRouter {
   }
 }
 
-export const appRouter = TrpcRouter.getAppRouter();
+export const { appRouter, createCallerFactory } = TrpcRouter.getAppRouter();
 export type AppRouter = TrpcRouter['appRouter'];
