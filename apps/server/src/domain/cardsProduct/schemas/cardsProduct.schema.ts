@@ -1,10 +1,6 @@
 import { imageSchema } from '@server/domain/images/schemas/image.schema';
+import { InfoCard } from '@server/shared/schemas/infocard.schema';
 import { z } from 'zod';
-
-const InfoCard = z.object({
-  title: z.string().min(1),
-  description: z.string().min(1),
-});
 
 export const createCardProductSchema = z.object({
   title: z.string().min(1),

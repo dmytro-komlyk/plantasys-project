@@ -6,7 +6,7 @@ import {
   createLineSchema,
   outputLineSchema,
   updateLineSchema,
-} from './schemas/productsLine.schema';
+} from './schemas/lines.schema';
 
 @Injectable()
 export class LinesService {

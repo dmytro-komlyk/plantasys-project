@@ -18,11 +18,11 @@ export class ProductsLineRouter {
   ) {}
 
   productsLineRouter = this.trpc.router({
-    getAllProducts: this.trpc.procedure
+    getAllProductsLine: this.trpc.procedure
       .meta({
         openapi: {
           method: 'GET',
-          path: '/getAllProducts',
+          path: '/getAllProductsLine',
           tags: ['productsLine'],
           summary: 'Read all line`s products',
         },
@@ -33,11 +33,11 @@ export class ProductsLineRouter {
         const items = await this.productsLineService.findAll();
         return { items };
       }),
-    getByIdProduct: this.trpc.procedure
+    getByIdProductLine: this.trpc.procedure
       .meta({
         openapi: {
           method: 'GET',
-          path: '/getByIdProduct',
+          path: '/getByIdProductLine',
           tags: ['productsLine'],
           summary: 'Read a line`s product by id',
         },
@@ -48,11 +48,11 @@ export class ProductsLineRouter {
         const item = await this.productsLineService.findById(input.id);
         return { item };
       }),
-    createProduct: this.trpc.procedure
+    createProducLine: this.trpc.procedure
       .meta({
         openapi: {
           method: 'POST',
-          path: '/createProduct',
+          path: '/createProductLine',
           tags: ['productsLine'],
           // protect: true,
           summary: 'Create a new line`s product',
@@ -64,11 +64,11 @@ export class ProductsLineRouter {
         const item = await this.productsLineService.create({ ...input });
         return { item };
       }),
-    updateProduct: this.trpc.procedure
+    updateProductLine: this.trpc.procedure
       .meta({
         openapi: {
           method: 'POST',
-          path: '/updateProduct',
+          path: '/updateProductLine',
           tags: ['productsLine'],
           // protect: true,
           summary: 'Update an existing line`s product',
@@ -80,7 +80,7 @@ export class ProductsLineRouter {
         const item = await this.productsLineService.update(input);
         return { item };
       }),
-    removeProduct: this.trpc.procedure
+    removeProductLine: this.trpc.procedure
       .meta({
         openapi: {
           method: 'POST',
