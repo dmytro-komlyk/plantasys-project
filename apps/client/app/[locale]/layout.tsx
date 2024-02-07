@@ -1,11 +1,10 @@
 import { locales } from "@client/config";
-import clsx from "clsx";
+import { NextIntlClientProvider, useMessages } from "next-intl";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
-import { Inter } from "next/font/google";
 import { notFound } from "next/navigation";
+import Header from "../(components)/Header";
+import "../styles.css";
 import { Providers } from "./providers";
-
-const inter = Inter({ subsets: ["latin"] });
 
 type Props = {
   children: React.ReactNode;
@@ -29,13 +28,22 @@ export async function generateMetadata({
 export default function LocaleLayout({ children, params: { locale } }: Props) {
   if (!locales.includes(locale as any)) notFound();
 
+  const messages = useMessages();
   // Enable static rendering
   unstable_setRequestLocale(locale);
 
   return (
-    <html lang={locale} className="light">
-      <body className={clsx(inter.className, "flex h-full flex-col")}>
-        <Providers>{children}</Providers>
+    <html lang={locale} className="light h-full">
+      <body
+        suppressHydrationWarning={true}
+        className="flex min-h-full flex-col"
+      >
+        <Providers>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <Header />
+            {children}
+          </NextIntlClientProvider>
+        </Providers>
       </body>
     </html>
   );

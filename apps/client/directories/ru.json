@@ -1,4 +1,13 @@
 {
+  "Header": {
+    "baseFertilizer": "Базовые удобрения",
+    "stimulants": "Стимуляторы",
+    "additives": "Добавки",
+    "regulators": "Регуляторы",
+    "blog": "Блог",
+    "support": "Поддержка",
+    "shop": "Магазин"
+  },
   "IndexPage": {
     "title": "next-intl Beispiel",
     "description": "Dies ist ein Beispiel, das die Verwendung von <code>next-intl</code> mit dem Next.js App Router demonstriert. Bei Ändern der Sprache rechts oben ändert sich der Inhalt dieser Seite."
@@ -15,7 +24,7 @@
     "title": "next-intl Beispiel"
   },
   "LocaleSwitcher": {
-    "label": "Sprache ändern",
-    "locale": "{locale, select, de {Deutsch} en {Englisch} other {Unbekannt}}"
+    "label": "Изменитть язык",
+    "locale": "{locale, select, ru {🐷 ru} uk {🇺🇦 UA} other {Unbekannt}}"
   }
 }
